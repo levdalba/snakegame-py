@@ -5,9 +5,7 @@ class Snake:
     def __init__(self, positions):
         self.segments = []
         self.create_snake(positions)
-
-    def up(self):
-        self.segments[0].setheading(90)
+        self.head = self.segments[0]
 
     def create_snake(self, positions):
         for pos in positions:
@@ -23,20 +21,34 @@ class Snake:
             new_x = self.segments[i - 1].xcor()
             new_y = self.segments[i - 1].ycor()
             self.segments[i].goto(new_x, new_y)
-        self.segments[0].forward(20)
+        self.head.forward(20)
+
+    def extend(self):
+        new_segment = Turtle()
+        new_segment.shape("square")
+        new_segment.penup()
+        new_segment.color("white")
+        new_segment.goto(self.segments[-1].position())
+        self.segments.append(new_segment)
+
+    def check_collision(self):
+        for segment in self.segments[1:]:
+            if self.head.distance(segment) < 10:
+                return True
+        return False
 
     def up(self):
-        if self.segments[0].heading() != 270:
-            self.segments[0].setheading(90)
+        if self.head.heading() != 270:
+            self.head.setheading(90)
 
     def down(self):
-        if self.segments[0].heading() != 90:
-            self.segments[0].setheading(270)
-
-    def left(self):
-        if self.segments[0].heading() != 0:
-            self.segments[0].setheading(180)
+        if self.head.heading() != 90:
+            self.head.setheading(270)
 
     def right(self):
-        if self.segments[0].heading() != 180:
-            self.segments[0].setheading(0)
+        if self.head.heading() != 180:
+            self.head.setheading(0)
+
+    def left(self):
+        if self.head.heading() != 0:
+            self.head.setheading(180)
