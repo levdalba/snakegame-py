@@ -3,12 +3,13 @@ import random
 
 
 class Food(Turtle):
-    def __init__(self):
+    def __init__(self, color="blue", points=1):
         super().__init__()
         self.shape("circle")
-        self.color("blue")
+        self.color(color)
         self.penup()
         self.speed("fastest")
+        self.points = points
         self.refresh()
 
     def refresh(self):

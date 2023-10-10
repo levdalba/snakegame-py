@@ -2,18 +2,19 @@ from turtle import Turtle
 
 
 class Scoreboard(Turtle):
-    def __init__(self):
+    def __init__(self, score):
         super().__init__()
-        self.score = 0
+        self.score = score
         self.color("white")
         self.penup()
         self.hideturtle()
         self.goto(0, 260)
         self.update_score()
 
-    def update_score(self):
+    def update_score(self, score=1):
         self.clear()
-        self.score += 1
+        self.score += score
+
         self.write(
             f"Score: {self.score}", align="center", font=("Courier", 24, "normal")
         )

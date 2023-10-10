@@ -12,7 +12,9 @@ screen.listen()
 
 snake = Snake(positions=[(0, 0), (-20, 0), (-40, 0)])
 food = Food()
-scoreboard = Scoreboard()
+yellow_food = Food(color="yellow", points=10)
+
+scoreboard = Scoreboard(score=-1)
 
 screen.onkey(snake.up, "Up")
 screen.onkey(snake.down, "Down")
@@ -29,6 +31,13 @@ while game_is_on:
     if snake.head.distance(food) < 15:
         food.refresh()
         scoreboard.update_score()
+
+        snake.extend()
+
+    if snake.head.distance(yellow_food) < 15:
+        yellow_food.refresh()
+        scoreboard.update_score(yellow_food.points)
+
         snake.extend()
 
     if (
