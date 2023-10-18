@@ -1,53 +1,59 @@
-from turtle import Screen
+import turtle
 import time
-from food import Food
 from snakeclass import Snake
-from score import Scoreboard
+from food import Food
+from score import Score
 
-screen = Screen()
-screen.bgcolor("black")
-screen.setup(width=600, height=600)
-screen.tracer(0)
-screen.listen()
+window = turtle.Screen()
+window.bgcolor("black")
+window.setup(width=650, height=650)
+window.tracer(0)
 
-snake = Snake(positions=[(0, 0), (-20, 0), (-40, 0)])
+
+snake = Snake()
 food = Food()
-yellow_food = Food(color="yellow", points=10)
+score = Score()
 
-scoreboard = Scoreboard(score=-1)
+window.listen()
+window.onkeypress(snake.change_up, "Up")
+window.onkeypress(snake.change_down, "Down")
+window.onkeypress(snake.change_right, "Right")
+window.onkeypress(snake.change_left, "Left")
 
-screen.onkey(snake.up, "Up")
-screen.onkey(snake.down, "Down")
-screen.onkey(snake.left, "Left")
-screen.onkey(snake.right, "Right")
 
-game_is_on = True
-while game_is_on:
-    screen.update()
-    time.sleep(0.1)
+def start_again():
+    score.reset_title()
+    snake.head.goto(40, 0)
+    for i in range(len(snake.segments)):
+        snake.segments[i].goto(1000, 1000)
+    snake.segments.clear()
+    snake.create_snake()
 
-    snake.move()
 
-    if snake.head.distance(food) < 15:
-        food.refresh()
-        scoreboard.update_score()
+while True:
+    window.update()
 
-        snake.extend()
-
-    if snake.head.distance(yellow_food) < 15:
-        yellow_food.refresh()
-        scoreboard.update_score(yellow_food.points)
-
+    if snake.head.distance(food.food) < 20:
+        score.increase_score()
+        food.new_food()
+        snake.move()
         snake.extend()
 
     if (
-        snake.head.xcor() > 290
-        or snake.head.xcor() < -290
-        or snake.head.ycor() > 290
-        or snake.head.ycor() < -290
-        or snake.check_collision()
+        snake.head.xcor() >= 300
+        or snake.head.xcor() <= -300
+        or snake.head.ycor() >= 300
+        or snake.head.ycor() <= -300
     ):
-        game_is_on = False
-        scoreboard.game_over()
+        start_again()
 
-screen.exitonclick()
+    for segment in snake.segments[1:]:
+        if snake.head.distance(segment) < 10:
+            start_again()
+            snake.move()
+            break
+
+    snake.move()
+    time.sleep(0.1)
+
+window.mainloop()

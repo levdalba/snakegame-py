@@ -1,24 +1,58 @@
-from turtle import Turtle
+import turtle
+
+file_name = "Highest_score_snake.txt"
 
 
-class Scoreboard(Turtle):
-    def __init__(self, score):
-        super().__init__()
-        self.score = score
-        self.color("white")
-        self.penup()
-        self.hideturtle()
-        self.goto(0, 260)
-        self.update_score()
+class Score:
+    def __init__(self):
+        self.create_score()
+        self.high_score = self.read_score()
+        self.score = 0
+        self.title = turtle.Turtle()
+        self.title.color("white")
+        self.title.speed(0)
+        self.title.hideturtle()
+        self.title.goto(0, 260)
+        self.update_title()
 
-    def update_score(self, score=1):
-        self.clear()
-        self.score += score
-
-        self.write(
-            f"Score: {self.score}", align="center", font=("Courier", 24, "normal")
+    def update_title(self):
+        self.title.clear()
+        self.title.write(
+            f"Score: {self.score} Highest Score {self.high_score}",
+            align="center",
+            font=("Courier", 24, "normal"),
         )
 
-    def game_over(self):
-        self.goto(0, 0)
-        self.write("Game Over", align="center", font=("Courier", 24, "normal"))
+    def increase_score(self):
+        self.score += 1
+        self.update_title()
+
+    def reset_title(self):
+        if self.high_score < self.score:
+            self.change_score()
+        self.score = 0
+        self.update_title()
+
+    def read_score(self):
+        f = open(file_name, "r")
+        num = int(f.read())
+        f.close()
+        return num
+
+    def change_score(self):
+        with open(file_name, "w") as f:
+            f.write(str(self.score))
+            self.high_score = self.score
+
+    def create_score(self):
+        if not self.check_exists():
+            f = open(file_name, "x")
+            f.write("0")
+            f.close()
+
+    def check_exists(self):
+        try:
+            with open(file_name, "r"):
+                return True
+        except FileNotFoundError:
+            return False
